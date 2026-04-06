@@ -1,0 +1,67 @@
+version: "3"
+
+tasks:
+  default:
+    desc: Format, vet, and test
+    deps: [fmt, vet, test]
+
+  build:
+    desc: Compile the binary
+    cmds:
+      - go build -o bin/oy .
+    generates:
+      - bin/oy
+
+  test:
+    desc: Run all tests
+    cmds:
+      - go test ./...
+
+  test:policy:
+    desc: Run policy package tests only
+    cmds:
+      - go test ./internal/policy/...
+
+  fmt:
+    desc: Format Go source files
+    cmds:
+      - gofmt -w .
+
+  vet:
+    desc: Run go vet
+    cmds:
+      - go vet ./...
+
+  tidy:
+    desc: Tidy go.mod and go.sum
+    cmds:
+      - go mod tidy
+
+  lint:
+    desc: Run golangci-lint
+    cmds:
+      - golangci-lint run ./...
+
+  secrets:
+    desc: Scan for secrets using gitleaks
+    cmds:
+      - gitleaks detect --source . --verbose
+
+  docker:build:
+    desc: Build a multi-platform image (linux/amd64 + linux/arm64)
+    vars:
+      IMAGE: '{{.IMAGE | default "aljoshare/oy:latest"}}'
+    cmds:
+      - docker buildx build --platform linux/amd64,linux/arm64 -t {{.IMAGE}} --push .
+
+  docker:build:local:
+    desc: Build a single-platform image for local testing (no push)
+    vars:
+      IMAGE: '{{.IMAGE | default "aljoshare/oy:dev"}}'
+    cmds:
+      - docker buildx build -t {{.IMAGE}} --load .
+
+  clean:
+    desc: Remove build artifacts
+    cmds:
+      - rm -rf bin/

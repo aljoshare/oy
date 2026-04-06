@@ -1,0 +1,9 @@
+# syntax=docker/dockerfile:1
+# Used by GoReleaser. The binary is pre-built by GoReleaser and copied in.
+# For manual/local builds use the main Dockerfile instead.
+
+FROM cgr.dev/chainguard/git:latest
+
+COPY oy /usr/local/bin/oy
+
+ENTRYPOINT ["oy"]

@@ -1,0 +1,83 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    binary: oy
+    ldflags:
+      - -s -w
+
+archives:
+  - formats:
+      - tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+
+dockers:
+  - image_templates:
+      - "ghcr.io/aljoshare/oy:{{ .Tag }}-amd64"
+      - "ghcr.io/aljoshare/oy:latest-amd64"
+    goarch: amd64
+    dockerfile: Dockerfile.goreleaser
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--label=org.opencontainers.image.created={{ .Date }}"
+      - "--label=org.opencontainers.image.source=https://github.com/aljoshare/oy"
+      - "--label=org.opencontainers.image.licenses=MIT"
+
+  - image_templates:
+      - "ghcr.io/aljoshare/oy:{{ .Tag }}-arm64"
+      - "ghcr.io/aljoshare/oy:latest-arm64"
+    goarch: arm64
+    dockerfile: Dockerfile.goreleaser
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--label=org.opencontainers.image.created={{ .Date }}"
+      - "--label=org.opencontainers.image.source=https://github.com/aljoshare/oy"
+      - "--label=org.opencontainers.image.licenses=MIT"
+
+docker_manifests:
+  - name_template: "ghcr.io/aljoshare/oy:{{ .Tag }}"
+    image_templates:
+      - "ghcr.io/aljoshare/oy:{{ .Tag }}-amd64"
+      - "ghcr.io/aljoshare/oy:{{ .Tag }}-arm64"
+
+  - name_template: "ghcr.io/aljoshare/oy:latest"
+    image_templates:
+      - "ghcr.io/aljoshare/oy:latest-amd64"
+      - "ghcr.io/aljoshare/oy:latest-arm64"
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - Merge pull request
+      - Merge branch
