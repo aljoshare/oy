@@ -13,6 +13,7 @@ import (
 type Repo struct {
 	URL       string `json:"url"`
 	LocalPath string `json:"local_path"`
+	Ref       string `json:"ref,omitempty"`
 }
 
 // Config holds all registered repositories.
@@ -83,6 +84,28 @@ func NormalizeURL(raw string) string {
 	return "https://" + raw
 }
 
+// ParseRef splits an optional @ref suffix from a raw repository URL.
+// Returns (baseURL, ref). git@ and ssh:// URLs are returned unchanged with an empty ref.
+//
+// Examples:
+//
+//	"github.com/owner/repo@v1.2.3"       → ("github.com/owner/repo", "v1.2.3")
+//	"https://github.com/owner/repo@main" → ("https://github.com/owner/repo", "main")
+//	"git@github.com:owner/repo"          → ("git@github.com:owner/repo", "")
+func ParseRef(rawURL string) (baseURL, ref string) {
+	if strings.HasPrefix(rawURL, "git@") || strings.HasPrefix(rawURL, "ssh://") {
+		return rawURL, ""
+	}
+	if i := strings.LastIndex(rawURL, "@"); i != -1 {
+		candidate := rawURL[i+1:]
+		// Reject if the candidate looks like part of a host (contains :)
+		if !strings.Contains(candidate, ":") {
+			return rawURL[:i], candidate
+		}
+	}
+	return rawURL, ""
+}
+
 // localDirName converts a clone URL to a safe directory name.
 func localDirName(cloneURL string) string {
 	name := strings.TrimPrefix(cloneURL, "https://")
@@ -93,9 +116,12 @@ func localDirName(cloneURL string) string {
 }
 
 // Add registers a policy repository, cloning it into the local cache.
-// rawURL may be a bare host/path (e.g. "github.com/owner/repo") or a full URL.
+// rawURL may be a bare host/path (e.g. "github.com/owner/repo"), a full URL,
+// or either form with an @ref suffix to pin to a specific tag or branch
+// (e.g. "github.com/owner/repo@v1.2.3").
 func Add(rawURL string) (*Repo, error) {
-	cloneURL := NormalizeURL(rawURL)
+	baseRawURL, ref := ParseRef(rawURL)
+	cloneURL := NormalizeURL(baseRawURL)
 
 	cfg, err := Load()
 	if err != nil {
@@ -111,22 +137,34 @@ func Add(rawURL string) (*Repo, error) {
 	if err != nil {
 		return nil, err
 	}
-	localPath := filepath.Join(base, localDirName(cloneURL))
+	dirKey := cloneURL
+	if ref != "" {
+		dirKey += "@" + ref
+	}
+	localPath := filepath.Join(base, localDirName(dirKey))
 
 	if err := os.MkdirAll(base, 0o755); err != nil {
 		return nil, fmt.Errorf("creating cache directory: %w", err)
 	}
 
 	if _, err := os.Stat(localPath); err == nil {
-		// Directory already exists — pull latest changes.
-		cmd := exec.Command("git", "-C", localPath, "pull", "--ff-only")
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		if err := cmd.Run(); err != nil {
-			return nil, fmt.Errorf("updating repository: %w", err)
+		if ref != "" {
+			// Pinned ref — directory already at the right commit, nothing to do.
+		} else {
+			cmd := exec.Command("git", "-C", localPath, "pull", "--ff-only")
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			if err := cmd.Run(); err != nil {
+				return nil, fmt.Errorf("updating repository: %w", err)
+			}
 		}
 	} else {
-		cmd := exec.Command("git", "clone", "--depth=1", cloneURL, localPath)
+		args := []string{"clone", "--depth=1"}
+		if ref != "" {
+			args = append(args, "--branch", ref)
+		}
+		args = append(args, cloneURL, localPath)
+		cmd := exec.Command("git", args...)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		if err := cmd.Run(); err != nil {
@@ -134,7 +172,7 @@ func Add(rawURL string) (*Repo, error) {
 		}
 	}
 
-	repo := Repo{URL: rawURL, LocalPath: localPath}
+	repo := Repo{URL: rawURL, LocalPath: localPath, Ref: ref}
 	cfg.Repos = append(cfg.Repos, repo)
 	if err := save(cfg); err != nil {
 		return nil, err

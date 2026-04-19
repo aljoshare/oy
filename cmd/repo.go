@@ -18,10 +18,12 @@ var repoAddCmd = &cobra.Command{
 	Short: "Add a policy repository",
 	Long: `Add a policy repository by URL. The repository is cloned locally and
 its .rego files are used when scanning. Bare host/path references are
-accepted in addition to full URLs:
+accepted in addition to full URLs. Append @ref to pin to a specific tag
+or branch:
 
   oy repo add github.com/aljoshare/oy-policies
-  oy repo add https://github.com/myorg/my-policies`,
+  oy repo add github.com/aljoshare/oy-policies@v1.2.0
+  oy repo add https://github.com/myorg/my-policies@main`,
 	Args: cobra.ExactArgs(1),
 	RunE: runRepoAdd,
 }
