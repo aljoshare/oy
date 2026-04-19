@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/aljoshare/oy/compare/v0.2.0...v0.3.0) (2026-04-19)
+
+
+### Features
+
+* read mandatory metadata header and support list of rules ([6bdb4f9](https://github.com/aljoshare/oy/commit/6bdb4f93280146fa9faeee83d96c15be5f332303))
+
 ## [0.2.0](https://github.com/aljoshare/oy/compare/v0.1.0...v0.2.0) (2026-04-19)
 
 
