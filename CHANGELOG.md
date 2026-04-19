@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/aljoshare/oy/compare/v0.4.0...v0.4.1) (2026-04-19)
+
+
+### Bug Fixes
+
+* ignore rego tests during scan ([0ca9258](https://github.com/aljoshare/oy/commit/0ca9258b176eee5f7860e8a34c548192fb0f143f))
+
 ## [0.4.0](https://github.com/aljoshare/oy/compare/v0.3.0...v0.4.0) (2026-04-19)
 
 
