@@ -2,9 +2,9 @@ package oy
 
 import rego.v1
 
-# Classic and 2024-2025 jailbreak persona/mode patterns.
-# Covers DAN, AIM, BISH, STAN variants and newer bypass techniques
-# documented in security research (Toxsec, IBM, OWASP LLM Top 10 2025).
+# METADATA
+# title: Jailbreak Persona and Safety Bypass
+# description: Detects jailbreak attempts including DAN/AIM/BISH/STAN personas, roleplay hijacking, hypothetical framing, and FlipAttack decode patterns.
 deny contains msg if {
 	patterns := [
 		# DAN family

@@ -2,7 +2,9 @@ package oy
 
 import rego.v1
 
-# Destructive shell commands — disk wipe, fork bomb, mass permission change.
+# METADATA
+# title: Destructive Shell Commands
+# description: Detects commands that would wipe disks, destroy filesystems, trigger fork bombs, or mass-change permissions.
 deny contains msg if {
 	patterns := [
 		"rm -rf /",
@@ -21,9 +23,9 @@ deny contains msg if {
 	msg := sprintf("potentially destructive shell command: %q", [pattern])
 }
 
-# Privilege escalation patterns.
-# Covers sudo abuse, setuid bit, sudoers tampering, firewall/SELinux disabling.
-# Related to active CVEs CVE-2025-32463 and CVE-2025-32462 and AI agent abuse scenarios.
+# METADATA
+# title: Privilege Escalation
+# description: Detects sudo abuse, setuid bit manipulation, sudoers tampering, and firewall or SELinux disabling.
 deny contains msg if {
 	patterns := [
 		"sudo chmod 777",
@@ -52,9 +54,9 @@ deny contains msg if {
 	msg := sprintf("possible privilege escalation command: %q", [pattern])
 }
 
-# Persistence attack patterns.
-# Covers SSH key injection, cron backdoors, shell profile poisoning,
-# and git hook hijacking as documented in Cisco and Penligent Labs research (2025).
+# METADATA
+# title: Persistence Attack
+# description: Detects SSH key injection, cron backdoors, shell profile poisoning, and git hook hijacking when combined with a write or network action.
 deny contains msg if {
 	patterns := [
 		"authorized_keys",
@@ -81,9 +83,9 @@ deny contains msg if {
 	msg := sprintf("possible persistence attack: %q combined with a write/network action", [pattern])
 }
 
-# Supply chain / dependency confusion patterns.
-# Covers malicious registry redirection and pipe-to-shell installs.
-# Informed by Shai-Hulud worm (CISA, Sep 2025) and s1ngularity npm attack (Aug 2025).
+# METADATA
+# title: Supply Chain and Dependency Confusion
+# description: Detects malicious package registry redirection, pipe-to-shell installs, and dangerous CLI flags that bypass safety checks.
 deny contains msg if {
 	patterns := [
 		"--index-url http",

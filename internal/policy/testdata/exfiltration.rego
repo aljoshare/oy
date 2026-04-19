@@ -2,9 +2,9 @@ package oy
 
 import rego.v1
 
-# Explicit exfiltration instruction patterns.
-# Covers techniques documented in Trend Micro, Knostic, and VibeAppScanner research (2025):
-# read sensitive file → transmit via HTTP/DNS/file write → attacker receives data.
+# METADATA
+# title: Data Exfiltration Instructions
+# description: Detects instructions to read sensitive files (SSH keys, AWS credentials, .env) and transmit them via HTTP, DNS, or image URLs.
 deny contains msg if {
 	patterns := [
 		# Generic exfiltration verbs
@@ -62,7 +62,9 @@ deny contains msg if {
 	msg := sprintf("possible data exfiltration instruction: %q", [pattern])
 }
 
-# Detect curl/wget piping to shell — used for both exfiltration and malware delivery
+# METADATA
+# title: Remote Code Execution via Pipe-to-Shell
+# description: Detects curl or wget commands piped directly to a shell interpreter, used for both exfiltration and malware delivery.
 deny contains msg if {
 	pipe_patterns := [
 		"| sh",

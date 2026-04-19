@@ -2,7 +2,9 @@ package oy
 
 import rego.v1
 
-# Indirect prompt injection: instruction override patterns
+# METADATA
+# title: Instruction Override
+# description: Detects indirect prompt injection via instruction override patterns such as "ignore previous instructions" or "admin mode activated".
 deny contains msg if {
 	patterns := [
 		"ignore previous instructions",
@@ -38,7 +40,9 @@ deny contains msg if {
 	msg := sprintf("possible prompt injection (instruction override): %q", [pattern])
 }
 
-# Context/memory poisoning — attempts to modify persistent agent memory
+# METADATA
+# title: Context and Memory Poisoning
+# description: Detects attempts to modify persistent agent memory files such as CLAUDE.md or .cursorrules.
 deny contains msg if {
 	patterns := [
 		"update your claude.md",
@@ -59,10 +63,9 @@ deny contains msg if {
 	msg := sprintf("possible context/memory poisoning: %q", [pattern])
 }
 
-# Invisible Unicode character injection — characters invisible to humans but read by LLMs.
-# Detects zero-width spaces/joiners (U+200B–U+200D), BOM (U+FEFF), word joiner (U+2060),
-# bidirectional control characters (U+202A–U+202E, U+2066–U+2069), and soft hyphen (U+00AD).
-# These were used in real attacks against GitHub Copilot and Cursor in 2025.
+# METADATA
+# title: Invisible Unicode Injection
+# description: Detects zero-width spaces, bidirectional control characters, and other invisible Unicode used to hide instructions from human reviewers.
 deny contains msg if {
 	suspicious := [
 		# Zero-width space (U+200B)

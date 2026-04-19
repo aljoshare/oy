@@ -2,10 +2,9 @@ package oy
 
 import rego.v1
 
-# Tool/skill abuse patterns — instructions that tell an AI agent to invoke its
-# built-in tools (bash, file write, HTTP, browser) to perform attacker actions.
-# Based on: Snyk "From SKILL.md to Shell Access" (2025), Invariant Labs MCP Tool
-# Poisoning disclosure (Apr 2025), Trend Micro AI agent vulnerability research.
+# METADATA
+# title: Tool and Skill Abuse
+# description: Detects instructions that tell an AI agent to invoke its built-in tools (bash, file write, HTTP, browser, MCP) to perform attacker-controlled actions.
 deny contains msg if {
 	patterns := [
 		# Direct tool invocation instructions
@@ -56,10 +55,9 @@ deny contains msg if {
 	msg := sprintf("possible tool/skill abuse instruction: %q", [pattern])
 }
 
-# MCP tool poisoning — hidden instructions in tool descriptions or comment blocks
-# targeting AI agents' context loading. Invariant Labs found 5.5% of public MCP
-# servers contain poisoned metadata; attacks succeed 84.2% of the time with
-# auto-approval enabled (2025).
+# METADATA
+# title: MCP Tool Poisoning
+# description: Detects hidden instructions in tool descriptions or HTML comment blocks targeting AI agents' context loading, as documented by Invariant Labs (2025).
 deny contains msg if {
 	patterns := [
 		"[tool_override]",

@@ -2,7 +2,9 @@ package oy
 
 import rego.v1
 
-# Classic social engineering / phishing patterns.
+# METADATA
+# title: Classic Social Engineering
+# description: Detects classic phishing patterns such as account verification prompts, credential requests, and urgency framing.
 deny contains msg if {
 	patterns := [
 		"click this link to verify your account",
@@ -21,9 +23,9 @@ deny contains msg if {
 	msg := sprintf("possible social engineering: %q", [pattern])
 }
 
-# AI-agent-specific social engineering:
-# Framing attacks that exploit helpfulness, urgency, or authority to get agents to act.
-# Research sources: OWASP LLM Top 10 2025, Lakera indirect injection research.
+# METADATA
+# title: Agent-Targeted Social Engineering
+# description: Detects framing attacks that exploit AI agent helpfulness, urgency, or authority claims to bypass safety checks or escalate privileges.
 deny contains msg if {
 	patterns := [
 		# Urgency/authority framing
