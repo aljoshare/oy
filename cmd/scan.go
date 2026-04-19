@@ -65,6 +65,8 @@ func runScan(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	printWarnings(evaluator.Warnings)
+
 	files, ignored, err := scanner.FindMarkdownFiles(root)
 	if err != nil {
 		return fmt.Errorf("scanning %q: %w", root, err)

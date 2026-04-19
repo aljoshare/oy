@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -15,5 +16,11 @@ func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
+	}
+}
+
+func printWarnings(warnings []string) {
+	for _, w := range warnings {
+		fmt.Fprintln(os.Stderr, w)
 	}
 }
