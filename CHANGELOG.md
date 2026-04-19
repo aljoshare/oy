@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/aljoshare/oy/compare/v0.3.0...v0.4.0) (2026-04-19)
+
+
+### Features
+
+* support refs for policy repositories ([6f0fdd5](https://github.com/aljoshare/oy/commit/6f0fdd58428bd0ecc0e09cb982b0819ba7b58a87))
+
 ## [0.3.0](https://github.com/aljoshare/oy/compare/v0.2.0...v0.3.0) (2026-04-19)
 
 
