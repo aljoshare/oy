@@ -30,6 +30,11 @@
     <img src="https://img.shields.io/badge/container-ghcr.io-0db7ed.svg?style=flat-square"
       alt="Container image" />
   </a>
+  <!-- Scorecard -->
+  <a href="https://scorecard.dev/viewer/?uri=github.com/aljoshare/oy">
+    <img src="https://api.scorecard.dev/projects/github.com/aljoshare/oy/badge"
+      alt="OpenSSF Scorecard" />
+  </a>
   <!-- Status -->
   <img src="https://img.shields.io/badge/status-unfinished--goods-yellow.svg?style=flat-square"
     alt="unfinished-goods" />
