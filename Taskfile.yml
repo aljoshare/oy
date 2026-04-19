@@ -52,14 +52,14 @@ tasks:
     vars:
       IMAGE: '{{.IMAGE | default "aljoshare/oy:latest"}}'
     cmds:
-      - docker buildx build --platform linux/amd64,linux/arm64 -t {{.IMAGE}} --push .
+      - nerdctl build --platform linux/amd64,linux/arm64 -t {{.IMAGE}} --push .
 
   docker:build:local:
     desc: Build a single-platform image for local testing (no push)
     vars:
       IMAGE: '{{.IMAGE | default "aljoshare/oy:dev"}}'
     cmds:
-      - docker buildx build -t {{.IMAGE}} --load .
+      - nerdctl build -t {{.IMAGE}} .
 
   clean:
     desc: Remove build artifacts
