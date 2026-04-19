@@ -115,10 +115,11 @@ func loadDir(dir string) (modules map[string]string, warnings []string, err erro
 		return nil, nil, fmt.Errorf("reading policy directory %q: %w", dir, err)
 	}
 	for _, e := range entries {
-		if e.IsDir() || !strings.EqualFold(filepath.Ext(e.Name()), ".rego") {
+		name := e.Name()
+		if e.IsDir() || !strings.EqualFold(filepath.Ext(name), ".rego") || strings.Contains(name, "_test") {
 			continue
 		}
-		path := filepath.Join(dir, e.Name())
+		path := filepath.Join(dir, name)
 		data, err := os.ReadFile(path)
 		if err != nil {
 			return nil, nil, fmt.Errorf("reading policy %q: %w", path, err)
