@@ -69,6 +69,7 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Output](#output)
+- [Ignoring files](#ignoring-files)
 - [Policies](#policies)
 - [Custom policies](#custom-policies)
 - [CI integration](#ci-integration)
@@ -110,7 +111,7 @@ FAIL .claude/skills/assistant/SKILL.md
 **Container (recommended for CI)**
 
 ```bash
-docker pull ghcr.io/aljoshare/oy:latest
+nerdctl pull ghcr.io/aljoshare/oy:latest
 ```
 
 Supports `linux/amd64` and `linux/arm64`. Built on [Chainguard](https://www.chainguard.dev/) — minimal attack surface, runs as nonroot.
@@ -165,6 +166,39 @@ oy scan .claude/ --format json
 | `0` | No violations found |
 | `1` | One or more violations found (or a fatal error occurred) |
 
+### Listing loaded rules
+
+```bash
+oy list
+```
+
+Lists every rule that is active in the loaded policy set, sorted alphabetically. Rules without a `# METADATA` title are excluded — `oy` will also print a warning to stderr for each such rule when scanning.
+
+```bash
+# List rules from a local policy directory
+oy list --policies ./my-policies
+
+# Output as JSON
+oy list --format json
+```
+
+Example output:
+
+```
+  - Data Exfiltration Instructions
+    Detects instructions to read sensitive files (SSH keys, AWS credentials, .env) and transmit them via HTTP, DNS, or image URLs.
+  - Instruction Override
+    Detects indirect prompt injection via instruction override patterns such as "ignore previous instructions" or "admin mode activated".
+  ...
+
+14 rule(s) loaded
+```
+
+| Flag | Short | Default | Description |
+|---|---|---|---|
+| `--policies` | `-p` | — | Directory of `.rego` files to use instead of registered repos |
+| `--format` | `-f` | `text` | Output format: `text` or `json` |
+
 ### Managing policy repositories
 
 ```bash
@@ -211,6 +245,19 @@ OK: 3 file(s) scanned, no violations found
 }
 ```
 
+## Ignoring files
+
+Create a `.oyignore` file in the root directory being scanned to exclude files from evaluation. Patterns follow the same syntax as [`filepath.Match`](https://pkg.go.dev/path/filepath#Match) — glob wildcards are supported, and lines starting with `#` are treated as comments.
+
+```
+# .oyignore
+vendor/AGENT.md
+*.generated.md
+docs/*.md
+```
+
+Files matched by `.oyignore` are skipped silently. If all files in a directory are ignored, `oy scan` exits `0` with no output.
+
 ## Policies
 
 Policies are maintained in separate repositories and registered with `oy repo add`. The official collection is [aljoshare/oy-policies](https://github.com/aljoshare/oy-policies):
@@ -228,13 +275,16 @@ See the [oy-policies repository](https://github.com/aljoshare/oy-policies) for f
 
 ## Custom policies
 
-Policies are plain [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/) files. All rules must belong to `package oy` and express violations as `deny` set entries:
+Policies are plain [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/) files. All rules must belong to `package oy` and express violations as `deny` set entries. Each rule must have a `# METADATA` block with at least a `title` — rules without one are skipped during scanning and a warning is printed to stderr.
 
 ```rego
 package oy
 
 import rego.v1
 
+# METADATA
+# title: My Custom Rule
+# description: Detects my forbidden phrase in agent files.
 deny contains msg if {
     contains(lower(input.content), "my forbidden phrase")
     msg := "found forbidden phrase"
