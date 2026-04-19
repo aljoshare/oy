@@ -20,7 +20,7 @@ jobs:
       issues: read
       pull-requests: read
       checks: read
-      action: read
+      actions: read
 
     steps:
       - uses: actions/checkout@v4
