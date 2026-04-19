@@ -113,6 +113,24 @@ FAIL .claude/skills/assistant/SKILL.md
 
 ## Installation
 
+**Install script (Linux and macOS)**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/aljoshare/oy/main/install.sh | sh
+```
+
+Installs the latest release to `/usr/local/bin`. To choose a different directory or pin a version:
+
+```bash
+# Install to ~/.local/bin
+curl -fsSL https://raw.githubusercontent.com/aljoshare/oy/main/install.sh | sh -s -- -b ~/.local/bin
+
+# Pin to a specific version
+curl -fsSL https://raw.githubusercontent.com/aljoshare/oy/main/install.sh | sh -s -- v1.2.0
+```
+
+The script detects your OS and architecture, downloads the matching archive from GitHub Releases, verifies the SHA-256 checksum, and extracts the binary.
+
 **Container (recommended for CI)**
 
 ```bash
@@ -210,13 +228,18 @@ Example output:
 # Register a policy repository (cloned into the OS cache directory)
 oy repo add github.com/aljoshare/oy-policies
 
+# Pin to a specific tag or branch
+oy repo add github.com/aljoshare/oy-policies@v1.2.0
+
 # List registered repositories and their local cache paths
 oy repo list
 ```
 
-`oy repo add` accepts bare `host/owner/repo` references as well as full `https://` and `git@` URLs. Config is stored in your OS user config directory (`~/.config/oy/config.json` on Linux, `~/Library/Application Support/oy/config.json` on macOS).
+`oy repo add` accepts bare `host/owner/repo` references as well as full `https://` and `git@` URLs. Append `@ref` to pin to a specific tag or branch — the repository is cloned with `--depth=1 --branch <ref>` so only that ref is fetched. Without `@ref`, the default branch is cloned.
 
-To update a registered repository, run `git pull` in its cache directory, which `oy repo list` will show you.
+Config is stored in your OS user config directory (`~/.config/oy/config.json` on Linux, `~/Library/Application Support/oy/config.json` on macOS).
+
+To update a registered repository, run `git pull` in its cache directory, which `oy repo list` will show you. Pinned refs do not need updating — re-add with a new `@ref` to switch versions.
 
 ## Output
 
