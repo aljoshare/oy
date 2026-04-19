@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/aljoshare/oy/compare/v0.1.0...v0.2.0) (2026-04-19)
+
+
+### Features
+
+* support ignore using .oyignore file ([cc0275b](https://github.com/aljoshare/oy/commit/cc0275bf78959a4a68efdfc93074a5bd4141cfb3))
+
 ## 0.1.0 (2026-04-16)
 
 
