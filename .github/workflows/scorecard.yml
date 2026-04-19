@@ -17,7 +17,9 @@ jobs:
       security-events: write
       id-token: write
       contents: read
-      actions: read
+      issues: read
+      pull-requests: read
+      checks: read
 
     steps:
       - uses: actions/checkout@v4
