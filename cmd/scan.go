@@ -65,11 +65,11 @@ func runScan(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	files, err := scanner.FindMarkdownFiles(root)
+	files, ignored, err := scanner.FindMarkdownFiles(root)
 	if err != nil {
 		return fmt.Errorf("scanning %q: %w", root, err)
 	}
-	if len(files) == 0 {
+	if len(files) == 0 && ignored == 0 {
 		return fmt.Errorf("no Markdown files found in %q — check the path", root)
 	}
 
