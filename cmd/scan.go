@@ -14,7 +14,7 @@ import (
 )
 
 type scanResult struct {
-	FilesScanned int               `json:"files_scanned"`
+	FilesScanned int                `json:"files_scanned"`
 	Violations   []policy.Violation `json:"violations"`
 }
 
