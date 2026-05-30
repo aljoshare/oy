@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/aljoshare/oy/compare/v0.4.1...v0.4.2) (2026-05-30)
+
+
+### Bug Fixes
+
+* **deps:** bump github.com/open-policy-agent/opa from 1.16.1 to 1.16.2 ([#17](https://github.com/aljoshare/oy/issues/17)) ([bc3c6d0](https://github.com/aljoshare/oy/commit/bc3c6d0bbe4ed349fdf68b08a815b5851783dc02))
+
 ## [0.4.1](https://github.com/aljoshare/oy/compare/v0.4.0...v0.4.1) (2026-04-19)
 
 
