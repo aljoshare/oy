@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.3](https://github.com/aljoshare/oy/compare/v0.4.2...v0.4.3) (2026-07-19)
+
+
+### Bug Fixes
+
+* **deps:** bump actions/checkout from 6 to 7 ([#23](https://github.com/aljoshare/oy/issues/23)) ([275482c](https://github.com/aljoshare/oy/commit/275482c51c99d54dcfc6a1da5df335d02536fa51))
+* **deps:** bump actions/setup-go from 6 to 7 ([#26](https://github.com/aljoshare/oy/issues/26)) ([0acdedc](https://github.com/aljoshare/oy/commit/0acdedc8eec31c0488b7b10797f9e5af7993a31e))
+* **deps:** bump github.com/open-policy-agent/opa from 1.16.2 to 1.17.0 ([#20](https://github.com/aljoshare/oy/issues/20)) ([ad749e0](https://github.com/aljoshare/oy/commit/ad749e0d5ad61f7c1d111c7b0c8c5aa642ef9d5d))
+* **deps:** bump github.com/open-policy-agent/opa from 1.17.0 to 1.18.2 ([#25](https://github.com/aljoshare/oy/issues/25)) ([1634e98](https://github.com/aljoshare/oy/commit/1634e983906cacf4bdc294c0015918d846d59754))
+
 ## [0.4.2](https://github.com/aljoshare/oy/compare/v0.4.1...v0.4.2) (2026-05-30)
 
 
